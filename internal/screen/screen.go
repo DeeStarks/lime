@@ -9,6 +9,10 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
+func createStyle(bg, fg tcell.Color) tcell.Style {
+	return tcell.StyleDefault.Background(bg).Foreground(fg)
+}
+
 type Screen struct {
 	defColorFG	tcell.Color // Default color foreground
 	defColorBG	tcell.Color // Default color background
@@ -19,7 +23,7 @@ type Screen struct {
 }
 
 func NewScreen(version configs.LimeVersion) *Screen {
-	defStyle := createDefStyle(version.DefaultBackgroundColor, version.DefaultForegroundColor)
+	defStyle := createStyle(version.DefaultBackgroundColor, version.DefaultForegroundColor)
 
 	// Initialize screen
 	tScreen, err := tcell.NewScreen()
@@ -47,14 +51,6 @@ func NewScreen(version configs.LimeVersion) *Screen {
 func (s *Screen) Quit() {
 	s.screen.Fini()
 	os.Exit(0)
-}
-
-func createDefStyle(bg, fg tcell.Color) tcell.Style {
-	return tcell.StyleDefault.Background(bg).Foreground(fg)
-}
-
-func createBoxStyle(bg, fg tcell.Color) tcell.Style {
-	return tcell.StyleDefault.Foreground(fg).Background(bg)
 }
 
 func (s *Screen) ShowBox() {
@@ -91,9 +87,9 @@ func (s *Screen) GetScreen() tcell.Screen {
 }
 
 func (s *Screen) GetDefStyle() tcell.Style {
-	return createDefStyle(s.defColorBG, s.defColorFG)
+	return createStyle(s.defColorBG, s.defColorFG)
 }
 
 func (s *Screen) GetBoxStyle() tcell.Style {
-	return createBoxStyle(s.boxColorBG, s.boxColorFG)
+	return createStyle(s.boxColorBG, s.boxColorFG)
 }
