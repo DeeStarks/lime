@@ -14,12 +14,12 @@ func createStyle(bg, fg tcell.Color) tcell.Style {
 }
 
 type Screen struct {
-	defColorFG	tcell.Color // Default color foreground
-	defColorBG	tcell.Color // Default color background
-	boxColorFG	tcell.Color // Box color foreground
-	boxColorBG	tcell.Color // Box color background
-	screen		tcell.Screen
-	version 	configs.LimeVersion
+	defColorFG tcell.Color // Default color foreground
+	defColorBG tcell.Color // Default color background
+	boxColorFG tcell.Color // Box color foreground
+	boxColorBG tcell.Color // Box color background
+	screen     tcell.Screen
+	version    configs.LimeVersion
 }
 
 func NewScreen(version configs.LimeVersion) *Screen {
@@ -43,8 +43,8 @@ func NewScreen(version configs.LimeVersion) *Screen {
 		defColorBG: version.DefaultBackgroundColor,
 		boxColorFG: version.BoxForegroundColor,
 		boxColorBG: version.BoxBackgroundColor,
-		screen: tScreen,
-		version: version,
+		screen:     tScreen,
+		version:    version,
 	}
 }
 
@@ -55,7 +55,7 @@ func (s *Screen) Quit() {
 
 func (s *Screen) ShowBox() {
 	// Draw background box
-	sw, sh := s.screen.Size() // screen width and height
+	sw, sh := s.screen.Size()     // screen width and height
 	bw, bh := (sw/2)-30, (sh/2)-5 // box width and height
 	s.DrawBox(bw, bh, sw-bw, sh-bh-3, "", true, true, true)
 

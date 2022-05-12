@@ -5,13 +5,13 @@ import (
 )
 
 type Application struct {
-	Version 	*Version
-	Screen 		*screen.Screen
+	Version *Version
+	Screen  *screen.Screen
 }
 
 func NewApplication(v *Version) Application {
 	return Application{
 		Version: v,
-		Screen: screen.NewScreen(v.LimeVersion),
+		Screen:  screen.NewScreen(v.LimeVersion),
 	}
 }

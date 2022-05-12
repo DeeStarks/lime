@@ -27,4 +27,3 @@ func (v *Version) GetInfo() string {
 func (v *Version) GetAuthor() string {
 	return v.Author
 }
-

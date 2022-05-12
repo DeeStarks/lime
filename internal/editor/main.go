@@ -6,7 +6,7 @@ import (
 )
 
 type Editor struct {
-	screen 	*screen.Screen
+	screen *screen.Screen
 }
 
 func NewEditor(screen *screen.Screen) *Editor {
@@ -31,7 +31,7 @@ func (e *Editor) Launch() {
 				e.screen.GetScreen().Clear()
 
 				// TODO: Implement editor
-				
+
 			}
 		}
 	}
