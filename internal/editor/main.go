@@ -37,8 +37,7 @@ func (e *Editor) Launch(file *os.File) {
 					started = true
 				}
 
-				// TODO: Implement editor
-
+				e.Edit(file)
 			}
 		}
 	}

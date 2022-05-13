@@ -13,7 +13,7 @@ func (e *Editor) showBars(filename string) { // Display title, numbering... bars
 	sw, sh := e.screen.GetScreen().Size() // Get screen size
 
 	// Title bar
-	tstyle := utils.CreateStyle(tcell.ColorBlack, tcell.ColorAntiqueWhite)
+	tstyle := utils.CreateStyle(tcell.ColorReset, tcell.ColorAntiqueWhite)
 	e.screen.DrawBox(0, 0, sw, 0, "", true, false, true, tcell.StyleDefault)
 	e.screen.DrawText((sw/2)-(len(filename)/2)-1, 0, (sw/2)+(len(filename)/2)+1, 0, filename, tstyle)
 
