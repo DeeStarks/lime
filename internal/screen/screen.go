@@ -1,17 +1,13 @@
 package screen
 
 import (
-	"fmt"
 	"log"
 	"os"
 
 	"github.com/DeeStarks/lime/configs"
+	"github.com/DeeStarks/lime/internal/utils"
 	"github.com/gdamore/tcell/v2"
 )
-
-func createStyle(bg, fg tcell.Color) tcell.Style {
-	return tcell.StyleDefault.Background(bg).Foreground(fg)
-}
 
 type Screen struct {
 	defColorFG tcell.Color // Default color foreground
@@ -23,7 +19,7 @@ type Screen struct {
 }
 
 func NewScreen(version configs.LimeVersion) *Screen {
-	defStyle := createStyle(version.DefaultBackgroundColor, version.DefaultForegroundColor)
+	defStyle := utils.CreateStyle(version.DefaultBackgroundColor, version.DefaultForegroundColor)
 
 	// Initialize screen
 	tScreen, err := tcell.NewScreen()
@@ -57,7 +53,7 @@ func (s *Screen) ShowBox() {
 	// Draw background box
 	sw, sh := s.screen.Size()     // screen width and height
 	bw, bh := (sw/2)-30, (sh/2)-5 // box width and height
-	s.DrawBox(bw, bh, sw-bw, sh-bh-3, "", true, true, true)
+	s.DrawBox(bw, bh, sw-bw, sh-bh-3, "", true, true, true, tcell.StyleDefault)
 
 	// Draw inner contents - logo, info, version, author...
 	// Logo
@@ -72,13 +68,12 @@ func (s *Screen) ShowBox() {
 	}
 
 	for _, v := range s.version.Logo {
-		fmt.Println(v)
-		s.DrawBox(lw, lh, sw-lw, sh-lh, v, false, false, false)
+		s.DrawBox(lw, lh, sw-lw, sh-lh, v, false, false, false, tcell.StyleDefault)
 		lh-- // Subtract to enter next line
 	}
 	// Info text
 	iw, ih := (sw/2)-(len(s.version.InfoText)/2)-2, (sh/2)+1
-	s.DrawBox(iw, ih, sw-iw, sh-ih, s.version.InfoText, false, false, false)
+	s.DrawBox(iw, ih, sw-iw, sh-ih, s.version.InfoText, false, false, false, tcell.StyleDefault)
 
 }
 
@@ -87,9 +82,9 @@ func (s *Screen) GetScreen() tcell.Screen {
 }
 
 func (s *Screen) GetDefStyle() tcell.Style {
-	return createStyle(s.defColorBG, s.defColorFG)
+	return utils.CreateStyle(s.defColorBG, s.defColorFG)
 }
 
 func (s *Screen) GetBoxStyle() tcell.Style {
-	return createStyle(s.boxColorBG, s.boxColorFG)
+	return utils.CreateStyle(s.boxColorBG, s.boxColorFG)
 }

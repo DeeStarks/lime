@@ -2,13 +2,17 @@ package screen
 
 import "github.com/gdamore/tcell/v2"
 
-func (s *Screen) DrawText(x1, y1, x2, y2 int, text string) {
+func (s *Screen) DrawText(x1, y1, x2, y2 int, text string, style tcell.Style) {
 	tScreen := s.GetScreen()
 
 	row := y1
 	col := x1
 	for _, r := range text {
-		tScreen.SetContent(col, row, r, nil, s.GetBoxStyle())
+		if style == tcell.StyleDefault {
+			tScreen.SetContent(col, row, r, nil, s.GetBoxStyle())
+		} else {
+			tScreen.SetContent(col, row, r, nil, style)
+		}
 		col++
 		if col >= x2 {
 			row++
@@ -20,7 +24,7 @@ func (s *Screen) DrawText(x1, y1, x2, y2 int, text string) {
 	}
 }
 
-func (s *Screen) DrawBox(x1, y1, x2, y2 int, text string, fill, borders, corners bool) {
+func (s *Screen) DrawBox(x1, y1, x2, y2 int, text string, fill, borders, corners bool, style tcell.Style) {
 	tScreen := s.GetScreen() //
 
 	if y2 < y1 {
@@ -34,7 +38,11 @@ func (s *Screen) DrawBox(x1, y1, x2, y2 int, text string, fill, borders, corners
 	if fill {
 		for row := y1; row <= y2; row++ {
 			for col := x1; col <= x2; col++ {
-				tScreen.SetContent(col, row, ' ', nil, s.GetBoxStyle())
+				if style == tcell.StyleDefault {
+					tScreen.SetContent(col, row, ' ', nil, s.GetBoxStyle())
+				} else {
+					tScreen.SetContent(col, row, ' ', nil, style)
+				}
 			}
 		}
 	}
@@ -61,5 +69,7 @@ func (s *Screen) DrawBox(x1, y1, x2, y2 int, text string, fill, borders, corners
 		}
 	}
 
-	s.DrawText(x1+1, y1+1, x2-1, y2-1, text)
+	if text != "" {
+		s.DrawText(x1+1, y1+1, x2-1, y2-1, text, style)
+	}
 }

@@ -1,6 +1,8 @@
 package editor
 
 import (
+	"os"
+
 	"github.com/DeeStarks/lime/internal/screen"
 	"github.com/gdamore/tcell/v2"
 )
@@ -15,7 +17,8 @@ func NewEditor(screen *screen.Screen) *Editor {
 	}
 }
 
-func (e *Editor) Launch() {
+func (e *Editor) Launch(file *os.File) {
+	var started bool
 	for {
 		e.screen.GetScreen().Show()
 		event := e.screen.GetScreen().PollEvent()
@@ -28,7 +31,11 @@ func (e *Editor) Launch() {
 				e.screen.Quit()
 			} else {
 				e.screen.GetScreen().Sync()
-				e.screen.GetScreen().Clear()
+				if !started {
+					e.screen.GetScreen().Clear()
+					e.showBars(file.Name())
+					started = true
+				}
 
 				// TODO: Implement editor
 
