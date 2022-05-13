@@ -7,10 +7,8 @@
 ### Installation
 ```
 $ git clone github.com/DeeStarks/lime && \
-$ cd lime && \
-$ make && \
-$ make build
+$ cd lime && make
 ```
 
 ### Usage
-- `make lime <filename>`: start the editor
+- `./lime <filename>`: start the editor

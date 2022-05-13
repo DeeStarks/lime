@@ -16,7 +16,6 @@ func main() {
 	}
 	filepath := args[1]
 	// Make sure a filenmae is specified
-	fmt.Println(filepath)
 	var file *os.File
 	if _, err := os.Stat(filepath); err != nil {
 		if os.IsNotExist(err) {

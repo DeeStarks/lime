@@ -1,10 +1,10 @@
-.DEFAULT_GOAL := install
+.DEFAULT_GOAL := setup
+
+setup:
+	@make install && make build
 
 install:
 	@go get ./...
 
 build:
-	@go build -o ./bin/lime ./cmd/main.go
-
-lime:
-	@make build && ./bin/lime
+	@go build -o ./lime ./cmd/main.go
