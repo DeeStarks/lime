@@ -9,7 +9,7 @@ import (
 )
 
 func LogMessage(message string, args ...interface{}) {
-	message = fmt.Sprintf("%v: %s\n", time.Now().Format("2006-01-02 15:04:05"), fmt.Sprintf(message, args...))
+	message = fmt.Sprintf("[%v]: %s\n", time.Now().Format("2006-01-02 15:04:05"), fmt.Sprintf(message, args...))
 	// Read the log file
 	logFile, err := ioutil.ReadFile(constants.LogFileName)
 	if err != nil {

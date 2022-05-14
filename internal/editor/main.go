@@ -60,7 +60,7 @@ func (e *Editor) Launch(file *os.File) {
 				x = x - (constants.EditorPaddingLeft + 2)
 				y = y - (constants.EditorPaddingTop + 1)
 
-				if x < lc[y] {
+				if len(lc) > y && x < lc[y] {
 					e.screen.MoveCursor(constants.KeyArrowRight)
 				}
 			} else if ev.Key() == tcell.KeyUp && started { // Up
@@ -95,7 +95,7 @@ func (e *Editor) Launch(file *os.File) {
 				x = x - (constants.EditorPaddingLeft + 2)
 				y = y - (constants.EditorPaddingTop + 1)
 
-				if lc[y] < x {
+				if len(lc) > y && lc[y] < x {
 					distance := x - lc[y]
 					for i := 0; i < distance; i++ {
 						e.screen.MoveCursor(constants.KeyArrowLeft)
