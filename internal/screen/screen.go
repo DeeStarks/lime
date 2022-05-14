@@ -16,6 +16,7 @@ type Screen struct {
 	boxColorBG tcell.Color // Box color background
 	screen     tcell.Screen
 	version    configs.LimeVersion
+	cursorPos  Cursor // Cursor position
 }
 
 func NewScreen(version configs.LimeVersion) *Screen {
