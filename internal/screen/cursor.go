@@ -1,6 +1,10 @@
 package screen
 
-import "github.com/DeeStarks/lime/internal/constants"
+import (
+	"context"
+
+	"github.com/DeeStarks/lime/internal/constants"
+)
 
 type Cursor struct {
 	x, y int
@@ -10,6 +14,11 @@ func (s *Screen) SetCursor(x, y int) {
 	s.cursorPos.x = x
 	s.cursorPos.y = y
 	s.ShowCursor()
+
+	// Update buffer index. This is used to determine the index to write to
+	index := y*(x-constants.EditorPaddingLeft-2)-1 // -1 to begin at 0
+	ctx := context.WithValue(s.getContext(), constants.BufferIndexCtxKey, index)
+	s.setContext(ctx)
 }
 
 func (s *Screen) GetCursorPosition() (x int, y int) {

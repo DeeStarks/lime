@@ -22,7 +22,7 @@ var (
 			"█▄▄ █ █░▀░█ ██▄",
 		},
 		Author:                 "DeeStarks",
-		InfoText:               "Ctrl+Q or esc to quit | Ctrl+W to edit",
+		InfoText:               "Ctrl+Q = quit | Ctrl+W = write | Ctrl+S = save",
 		DefaultBackgroundColor: tcell.Color16,
 		DefaultForegroundColor: tcell.ColorReset,
 		BoxBackgroundColor:     tcell.ColorReset,

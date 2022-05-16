@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/DeeStarks/lime/configs"
 	app "github.com/DeeStarks/lime/init"
-	"github.com/DeeStarks/lime/internal/editor"
-	"os"
 )
 
 func main() {
@@ -45,7 +45,5 @@ func main() {
 
 	v := app.NewVersion(configs.V1)
 	a := app.NewApplication(v)
-	a.Screen.ShowBox() //
-	e := editor.NewEditor(a.Screen)
-	e.Launch(file)
+	a.Start(file)
 }

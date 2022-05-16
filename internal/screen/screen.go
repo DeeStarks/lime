@@ -1,6 +1,7 @@
 package screen
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -17,9 +18,12 @@ type Screen struct {
 	screen     tcell.Screen
 	version    configs.LimeVersion
 	cursorPos  Cursor // Cursor position
+	getContext   func() context.Context
+	setContext func(context.Context)
+	cancelCtx context.CancelFunc
 }
 
-func NewScreen(version configs.LimeVersion) *Screen {
+func NewScreen(version configs.LimeVersion, setCtx func(context.Context), getCtx func() context.Context, cancelCtx context.CancelFunc) *Screen {
 	defStyle := utils.CreateStyle(version.DefaultBackgroundColor, version.DefaultForegroundColor)
 
 	// Initialize screen
@@ -42,6 +46,9 @@ func NewScreen(version configs.LimeVersion) *Screen {
 		boxColorBG: version.BoxBackgroundColor,
 		screen:     tScreen,
 		version:    version,
+		getContext: getCtx,
+		setContext: setCtx,
+		cancelCtx: cancelCtx,
 	}
 }
 
@@ -68,7 +75,7 @@ func (s *Screen) ShowBox() {
 		right--
 	}
 
-	for _, v := range s.version.Logo {
+	for _, v := range logo {
 		s.DrawBox(lw, lh, sw-lw, sh-lh, v, false, false, false, tcell.StyleDefault)
 		lh-- // Subtract to enter next line
 	}
@@ -88,4 +95,8 @@ func (s *Screen) GetDefStyle() tcell.Style {
 
 func (s *Screen) GetBoxStyle() tcell.Style {
 	return utils.CreateStyle(s.boxColorBG, s.boxColorFG)
+}
+
+func (s *Screen) CancelContext() {
+	s.cancelCtx()
 }
