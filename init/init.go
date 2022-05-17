@@ -11,10 +11,10 @@ import (
 type Application struct {
 	Version *Version
 	Screen  *screen.Screen
-	Editor *editor.Editor
+	Editor  *editor.Editor
 }
 
-func NewApplication(v *Version) Application {
+func NewApplication(f *os.File, v *Version) Application {
 	// Create a general context
 	ctx, cancel := context.WithCancel(context.Background())
 	setContext := func(newCtx context.Context) {
@@ -31,11 +31,11 @@ func NewApplication(v *Version) Application {
 	return Application{
 		Version: v,
 		Screen:  screen,
-		Editor: editor.NewEditor(screen, setContext, getContext, cancel),
+		Editor:  editor.NewEditor(f, screen, setContext, getContext, cancel),
 	}
 }
 
-func (a Application) Start(f *os.File) {
+func (a Application) Start() {
 	a.Screen.ShowBox() // Launch the initial box
-	a.Editor.Launch(f)
+	a.Editor.Launch()
 }

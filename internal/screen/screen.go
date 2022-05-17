@@ -18,9 +18,9 @@ type Screen struct {
 	screen     tcell.Screen
 	version    configs.LimeVersion
 	cursorPos  Cursor // Cursor position
-	getContext   func() context.Context
+	getContext func() context.Context
 	setContext func(context.Context)
-	cancelCtx context.CancelFunc
+	cancelCtx  context.CancelFunc
 }
 
 func NewScreen(version configs.LimeVersion, setCtx func(context.Context), getCtx func() context.Context, cancelCtx context.CancelFunc) *Screen {
@@ -48,7 +48,7 @@ func NewScreen(version configs.LimeVersion, setCtx func(context.Context), getCtx
 		version:    version,
 		getContext: getCtx,
 		setContext: setCtx,
-		cancelCtx: cancelCtx,
+		cancelCtx:  cancelCtx,
 	}
 }
 

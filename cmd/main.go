@@ -44,6 +44,6 @@ func main() {
 	}
 
 	v := app.NewVersion(configs.V1)
-	a := app.NewApplication(v)
-	a.Start(file)
+	a := app.NewApplication(file, v)
+	a.Start()
 }

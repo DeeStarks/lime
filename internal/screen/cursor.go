@@ -1,9 +1,8 @@
 package screen
 
 import (
-	"context"
-
 	"github.com/DeeStarks/lime/internal/constants"
+	"github.com/DeeStarks/lime/internal/utils"
 )
 
 type Cursor struct {
@@ -14,11 +13,6 @@ func (s *Screen) SetCursor(x, y int) {
 	s.cursorPos.x = x
 	s.cursorPos.y = y
 	s.ShowCursor()
-
-	// Update buffer index. This is used to determine the index to write to
-	index := y*(x-constants.EditorPaddingLeft-2)-1 // -1 to begin at 0
-	ctx := context.WithValue(s.getContext(), constants.BufferIndexCtxKey, index)
-	s.setContext(ctx)
 }
 
 func (s *Screen) GetCursorPosition() (x int, y int) {
@@ -52,7 +46,8 @@ func (s *Screen) MoveCursor(code constants.KeyCode) {
 	case constants.KeyArrowUp:
 		x, y := s.GetCursorPosition()
 		pt := constants.EditorPaddingTop + 1
-		if y-1 <= pt {
+		if y <= pt {
+			utils.LogMessage("We're here")
 			s.ScrollUp()
 			s.SetCursor(x, pt)
 		} else {
@@ -62,7 +57,8 @@ func (s *Screen) MoveCursor(code constants.KeyCode) {
 		x, y := s.GetCursorPosition()
 		_, sh := s.GetScreen().Size()
 		pb := constants.EditorPaddingBottom + 1
-		if y+1 >= sh-pb {
+		utils.LogMessage("%d, %d", y, sh-pb)
+		if y >= sh-pb {
 			s.ScrollDown()
 			s.SetCursor(x, sh-pb)
 		} else {
