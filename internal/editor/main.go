@@ -21,7 +21,7 @@ type Editor struct {
 	screen        *screen.Screen
 	width         int
 	height        int
-	title 		  string
+	title         string
 	lineNumbering []LineNumbering
 	defStyle      tcell.Style
 	getContext    func() context.Context
@@ -53,7 +53,7 @@ func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context
 		screen:        screen,
 		width:         sw - constants.EditorPaddingLeft - constants.EditorPaddingRight,
 		height:        sh - constants.EditorPaddingTop - constants.EditorPaddingBottom,
-		title: 		   file.Name(),
+		title:         file.Name(),
 		lineNumbering: nl,
 		defStyle:      utils.CreateStyle(tcell.ColorBlack, tcell.ColorWhiteSmoke),
 		getContext:    getCtx,
@@ -131,7 +131,7 @@ func (e *Editor) UpdateBufferIndex() {
 	x, y := e.screen.GetCursorPosition()
 
 	// Get the line number of the cursor
-	prevs := e.getContext().Value(constants.StartLineCtxKey).(int)+y // The previous lines, including the ones scrolled off the screen
+	prevs := e.getContext().Value(constants.StartLineCtxKey).(int) + y // The previous lines, including the ones scrolled off the screen
 	var count int
 	if len(newLines) > 0 { // If there are lines in the buffer
 		for i := 0; i < prevs-1; i++ {
@@ -145,7 +145,7 @@ func (e *Editor) UpdateBufferIndex() {
 		}
 	}
 	count += x // The current line
-	count -= constants.EditorPaddingLeft+2
+	count -= constants.EditorPaddingLeft + 2
 
 	// Update the line counter
 	ctx := context.WithValue(e.getContext(), constants.BufferIndexCtxKey, count-1)
@@ -160,15 +160,15 @@ func (e *Editor) Launch() {
 	defer e.CancelContext()
 
 	// Set Initial contexts
-	func () {
+	func() {
 		// Set initial buffer index. This is used to determine the index to write to
 		ctx := context.WithValue(e.getContext(), constants.BufferIndexCtxKey, 0)
 		e.setContext(ctx)
-	
+
 		// Set initial line counter
 		ctx = context.WithValue(e.getContext(), constants.LineCounterCtxKey, LineCounter{})
 		e.setContext(ctx)
-	
+
 		// Set starting line context
 		ctx = context.WithValue(e.getContext(), constants.StartLineCtxKey, 0)
 		e.setContext(ctx)
@@ -176,7 +176,7 @@ func (e *Editor) Launch() {
 		// Set total lines context
 		ctx = context.WithValue(e.getContext(), constants.TotalLinesCtxKey, 0)
 		e.setContext(ctx)
-	} ()
+	}()
 
 	var started bool
 	for {
@@ -222,23 +222,27 @@ func (e *Editor) Launch() {
 				x = x - (constants.EditorPaddingLeft + 2)
 				y = y - (constants.EditorPaddingTop + 1)
 
-				if lc[y] < x {
-					distance := x - lc[y]
-					for i := 0; i < distance; i++ {
-						e.screen.MoveCursor(constants.KeyArrowLeft)
+				if len(lc) > y {
+					if lc[y] < x {
+						distance := x - lc[y]
+						for i := 0; i < distance; i++ {
+							e.screen.MoveCursor(constants.KeyArrowLeft)
+						}
 					}
+				} else {
+					e.screen.SetCursor(constants.EditorPaddingLeft+2, y-1)
 				}
 				e.Read() // Update incase page has been moved up
 			} else if ev.Key() == tcell.KeyDown && started { // Down
-				_, y := e.screen.GetCursorPosition()
+				// _, y := e.screen.GetCursorPosition()
 				// Subtract paddings and extra paddings
-				y = y - (constants.EditorPaddingTop + 1)
+				// y = y - (constants.EditorPaddingTop + 1)
 
 				lc := e.getContext().Value(constants.LineCounterCtxKey).(LineCounter)
 				// Make sure the cursor does not exceed the last line
-				if y < len(lc)-1 {
-					e.screen.MoveCursor(constants.KeyArrowDown)
-				}
+				e.screen.MoveCursor(constants.KeyArrowDown)
+				// if y < len(lc)-1 {
+				// }
 
 				// Cursor position doens't exceed the last character
 				// First get new cursor position
@@ -264,7 +268,7 @@ func (e *Editor) Launch() {
 				}
 
 				// Set cursor to the start
-				e.screen.SetCursor(constants.EditorPaddingLeft+2, constants.EditorPaddingTop+1) 
+				e.screen.SetCursor(constants.EditorPaddingLeft+2, constants.EditorPaddingTop+1)
 
 				e.Read()
 			} else if (ev.Key() == tcell.KeyBackspace || ev.Key() == tcell.KeyBackspace2) && started {

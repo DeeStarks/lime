@@ -2,7 +2,6 @@ package screen
 
 import (
 	"github.com/DeeStarks/lime/internal/constants"
-	"github.com/DeeStarks/lime/internal/utils"
 )
 
 type Cursor struct {
@@ -46,24 +45,40 @@ func (s *Screen) MoveCursor(code constants.KeyCode) {
 	case constants.KeyArrowUp:
 		x, y := s.GetCursorPosition()
 		pt := constants.EditorPaddingTop + 1
-		if y <= pt {
-			utils.LogMessage("We're here")
+		sl := s.getContext().Value(constants.StartLineCtxKey).(int)
+		if y == pt && sl > 0 {
 			s.ScrollUp()
-			s.SetCursor(x, pt)
+			// s.SetCursor(x, y)
 		} else {
-			s.SetCursor(x, y-1)
+			if y <= pt {
+				s.SetCursor(x, pt)
+			} else {
+				s.SetCursor(x, y-1)
+			}
 		}
 	case constants.KeyArrowDown:
 		x, y := s.GetCursorPosition()
 		_, sh := s.GetScreen().Size()
-		pb := constants.EditorPaddingBottom + 1
-		utils.LogMessage("%d, %d", y, sh-pb)
-		if y >= sh-pb {
+		pt := constants.EditorPaddingTop + 1
+		sl := s.getContext().Value(constants.StartLineCtxKey).(int)
+		tl := s.getContext().Value(constants.TotalLinesCtxKey).(int)
+
+		if y+pt == sh && y+pt+sl < tl { // if at bottom of screen and there are more lines to show
 			s.ScrollDown()
-			s.SetCursor(x, sh-pb)
+			// s.SetCursor(x, sh-pt)
 		} else {
-			s.SetCursor(x, y+1)
+			if y+sl >= tl { // if at the last line
+				s.SetCursor(x, y)
+			} else {
+				s.SetCursor(x, y+1)
+			}
 		}
+		// if y >= sh-pb {
+		// 	s.ScrollDown()
+		// 	s.SetCursor(x, sh-pb)
+		// } else {
+		// 	s.SetCursor(x, y+1)
+		// }
 	case constants.KeyEnter:
 		x, y := s.GetCursorPosition()
 		_, sh := s.GetScreen().Size()

@@ -9,7 +9,6 @@ import (
 
 	"github.com/DeeStarks/lime/configs"
 	"github.com/DeeStarks/lime/internal/constants"
-	"github.com/DeeStarks/lime/internal/utils"
 )
 
 func (e *Editor) Read() {
@@ -62,7 +61,8 @@ func (e *Editor) Read() {
 			lines[i] = wrappedLines
 		}
 	}
-	utils.LogMessage("TLC: %d", totalLineLength)
+	ctx := context.WithValue(e.getContext(), constants.TotalLinesCtxKey, totalLineLength)
+	e.setContext(ctx)
 
 	// Save the lines in the editor
 	e.lines = lines
@@ -81,6 +81,11 @@ func (e *Editor) Read() {
 
 	// Restart the line counter
 	e.setContext(context.WithValue(e.getContext(), constants.LineCounterCtxKey, LineCounter{}))
+	if startLine+endLine >= totalLineLength-1 {
+		endLine = len(lines)
+	} else {
+		endLine = startLine + endLine
+	}
 	for _, l := range lines[startLine:endLine] {
 		// Create a new line counter
 		nmb := struct {
@@ -176,11 +181,10 @@ func (e *Editor) Write(char rune) {
 	// Move cursor down if we're at the end of the line
 	cx, cy = e.screen.GetCursorPosition()
 	sw, _ := e.screen.GetScreen().Size()
-	
+
 	if cx == sw-constants.EditorPaddingRight-1 {
 		e.screen.SetCursor(constants.EditorPaddingLeft+2, cy+1)
 		// currIndex = e.getContext().Value(constants.BufferIndexCtxKey).(int) + 1
-		utils.LogMessage("Char: %s", string(e.ReadBufferByte()))
 	}
 	e.Read()
 }
