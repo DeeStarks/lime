@@ -184,7 +184,6 @@ func (e *Editor) Write(char rune) {
 
 	if cx == sw-constants.EditorPaddingRight-1 {
 		e.screen.SetCursor(constants.EditorPaddingLeft+2, cy+1)
-		// currIndex = e.getContext().Value(constants.BufferIndexCtxKey).(int) + 1
 	}
 	e.Read()
 }

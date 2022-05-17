@@ -127,7 +127,6 @@ func (e *Editor) UpdateBufferIndex() {
 		}
 	}
 
-	// lc := e.getContext().Value(constants.LineCounterCtxKey).(LineCounter)
 	x, y := e.screen.GetCursorPosition()
 
 	// Get the line number of the cursor
@@ -234,18 +233,10 @@ func (e *Editor) Launch() {
 				}
 				e.Read() // Update incase page has been moved up
 			} else if ev.Key() == tcell.KeyDown && started { // Down
-				// _, y := e.screen.GetCursorPosition()
-				// Subtract paddings and extra paddings
-				// y = y - (constants.EditorPaddingTop + 1)
-
-				lc := e.getContext().Value(constants.LineCounterCtxKey).(LineCounter)
-				// Make sure the cursor does not exceed the last line
 				e.screen.MoveCursor(constants.KeyArrowDown)
-				// if y < len(lc)-1 {
-				// }
-
+				
 				// Cursor position doens't exceed the last character
-				// First get new cursor position
+				lc := e.getContext().Value(constants.LineCounterCtxKey).(LineCounter)
 				x, y := e.screen.GetCursorPosition()
 				x = x - (constants.EditorPaddingLeft + 2)
 				y = y - (constants.EditorPaddingTop + 1)
