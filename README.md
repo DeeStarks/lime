@@ -21,4 +21,4 @@ Configuration files are located in `configs` directory.
 ### Key Bindings
 - `Ctrl+W`: launch editor
 - `Ctrl+Q`: quit the editor
-- `Ctrl+S`: saveasciinema rec file
+- `Ctrl+S`: save file
