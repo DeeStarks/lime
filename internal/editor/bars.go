@@ -24,14 +24,14 @@ func (e *Editor) showBars() { // Display title, numbering... bars
 	nw, nh := 6, sh
 	e.screen.DrawBox(0, 1, nw, nh, "", true, false, false, tcell.StyleDefault)
 	for _, l := range e.lineNumbering {
-		e.screen.DrawText(2, l.yAxis, nw, l.yAxis+1, strconv.Itoa(l.number), style)
+		e.screen.DrawText(1, l.yAxis, nw, l.yAxis+1, strconv.Itoa(l.number), style)
 	}
 
 	// Fill the remain space with a dummy character
 	prev := e.lineNumbering[len(e.lineNumbering)-1].yAxis + 1
 	style = utils.CreateStyle(tcell.ColorReset, tcell.ColorDimGray)
 	for i := prev; i < sh; i++ {
-		e.screen.DrawText(2, i, nw, i+1, "~", style)
+		e.screen.DrawText(1, i, nw, i+1, "~", style)
 	}
 
 }
