@@ -117,6 +117,32 @@ func (e *Editor) ReadBufferString() string {
 	return e.buffer.String()
 }
 
+func (e *Editor) ScrollUp() {
+	// This checks if that the cursor is at the last line before scrolling
+	_, y := e.screen.GetCursorPosition()
+	_, sh := e.screen.GetScreen().Size()
+	sh = sh - (constants.EditorPaddingTop+1)
+	line := y - (constants.EditorPaddingTop+1)
+
+	if line >= sh && e.insIndex <= len(e.ReadBufferByte()) {
+		e.startLine++
+		e.Read()
+		e.UpdateCursorPosition()
+	}
+}
+
+func (e *Editor) ScrollDown() {
+	// This checks if that the cursor is at the first line before scrolling
+	_, y := e.screen.GetCursorPosition()
+	line := y - (constants.EditorPaddingTop + 1)
+
+	if line == 0 && e.startLine > 0 {
+		e.startLine--
+		e.Read()
+		e.UpdateCursorPosition()
+	}
+}
+
 func (e *Editor) UpdateCursorPosition() {
 	var (
 		x        = constants.EditorPaddingLeft + 2
@@ -178,9 +204,11 @@ func (e *Editor) Launch() {
 			} else if ev.Key() == tcell.KeyLeft && started && e.insIndex > 0 { // Left
 				e.insIndex--
 				e.UpdateCursorPosition()
+				e.ScrollDown()
 			} else if ev.Key() == tcell.KeyRight && started && e.insIndex < len(e.ReadBufferByte()) { // Right
 				e.insIndex++
 				e.UpdateCursorPosition()
+				e.ScrollUp()
 			} else if ev.Key() == tcell.KeyUp && started { // Up
 				// Get the width between the index and beginning of the line
 				x, _ := e.screen.GetCursorPosition()
@@ -200,8 +228,10 @@ func (e *Editor) Launch() {
 						count++
 					}
 				}
-				e.insIndex = prevLine + width
-				e.UpdateCursorPosition()
+				if prevLine + width > 0 {
+					e.insIndex = prevLine + width
+					e.UpdateCursorPosition()
+				}
 			} else if ev.Key() == tcell.KeyDown && started { // Down
 				// Get the width between the index and beginning of the line
 				x, _ := e.screen.GetCursorPosition()
@@ -215,8 +245,10 @@ func (e *Editor) Launch() {
 						break
 					}
 				}
-				e.insIndex = nextLine + width
-				e.UpdateCursorPosition()
+				if nextLine + width < len(e.ReadBufferByte()) {
+					e.insIndex = nextLine + width
+					e.UpdateCursorPosition()
+				}
 			} else if ev.Key() == tcell.KeyCtrlS && started {
 				e.Save()
 			} else if ev.Key() == tcell.KeyCtrlW {

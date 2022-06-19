@@ -20,6 +20,17 @@ func (e *Editor) Read() {
 	sw, _ := e.screen.GetScreen().Size()
 
 	buf := e.ReadBufferByte()
+	
+	newlineCounts := 1
+	for i := 0; i < len(buf); i++ {
+		if buf[i] == '\n' {
+			if newlineCounts == e.startLine {
+				buf = buf[i+1:]
+				break
+			}
+			newlineCounts++
+		}
+	}
 
 	tab := make([]byte, configs.TabSize)
 	for i := 0; i < configs.TabSize; i++ {
@@ -35,7 +46,7 @@ func (e *Editor) Read() {
 		yAxis       int = constants.EditorPaddingTop + 1
 		lineLength  int = 0
 		lineCounter []int
-		numCount    int = 1
+		numCount    int = e.startLine+1
 		numbering       = []LineNumbering{
 			{
 				number: numCount,
