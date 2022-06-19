@@ -15,7 +15,7 @@ func (e *Editor) Read() {
 
 	screen, _ := drawEditBox(e)
 	sw, _ := e.screen.GetScreen().Size()
-	
+
 	buf := e.ReadBufferByte()
 
 	tab := make([]byte, configs.TabSize)
@@ -24,14 +24,14 @@ func (e *Editor) Read() {
 	}
 
 	var (
-		word string
-		wordCount int
-		xAxis int = constants.EditorPaddingLeft + 2
-		yAxis int = constants.EditorPaddingTop + 1
-		lineLength int = 0
+		word        string
+		wordCount   int
+		xAxis       int = constants.EditorPaddingLeft + 2
+		yAxis       int = constants.EditorPaddingTop + 1
+		lineLength  int = 0
 		lineCounter []int
-		numCount int = 1
-		numbering = []LineNumbering{
+		numCount    int = 1
+		numbering       = []LineNumbering{
 			{
 				number: numCount,
 				yAxis:  yAxis,
@@ -48,7 +48,7 @@ func (e *Editor) Read() {
 		}
 		if c == '\t' {
 			e.screen.DrawText(
-				xAxis, yAxis, 
+				xAxis, yAxis,
 				xAxis+configs.TabSize, yAxis,
 				string(tab), e.defStyle)
 			xAxis += configs.TabSize
@@ -77,24 +77,24 @@ func (e *Editor) Read() {
 			numbering = append(numbering, nmb)
 		} else if c == ' ' {
 			lineLength++
-			if xAxis + wordCount > sw {
+			if xAxis+wordCount > sw {
 				xAxis = constants.EditorPaddingLeft + 2
 				yAxis++
 				lineCounter = append(lineCounter, lineLength-wordCount)
 				lineLength = 0
 			}
 			e.screen.DrawText(
-				xAxis, yAxis, 
+				xAxis, yAxis,
 				xAxis+wordCount, yAxis,
 				word, e.defStyle)
-			xAxis += wordCount+1
+			xAxis += wordCount + 1
 			word = ""
 			wordCount = 0
 		} else if i == len(buf)-1 {
 			word += string(c)
 			wordCount++
 			lineLength++
-			if xAxis + wordCount > sw {
+			if xAxis+wordCount > sw {
 				xAxis = constants.EditorPaddingLeft + 2
 				yAxis++
 			}

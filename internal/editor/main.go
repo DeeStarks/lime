@@ -17,8 +17,8 @@ type Editor struct {
 	file          *os.File
 	initialBuffer *bytes.Buffer
 	buffer        *bytes.Buffer
-	insIndex	  int // The index where new input will be appended
-	startLine 	  int // The line first line on the screen
+	insIndex      int   // The index where new input will be appended
+	startLine     int   // The line first line on the screen
 	lineCounter   []int // The length of each line
 	screen        *screen.Screen
 	width         int
@@ -51,7 +51,7 @@ func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context
 		file:          file,
 		initialBuffer: bytes.NewBuffer(b),
 		buffer:        bytes.NewBuffer(b),
-		insIndex:	   0,
+		insIndex:      0,
 		startLine:     0,
 		lineCounter:   make([]int, sh),
 		screen:        screen,
@@ -116,13 +116,13 @@ func (e *Editor) ReadBufferString() string {
 
 func (e *Editor) UpdateCursorPosition() {
 	var (
-		x = constants.EditorPaddingLeft + 2
-		y = constants.EditorPaddingTop + 1
+		x        = constants.EditorPaddingLeft + 2
+		y        = constants.EditorPaddingTop + 1
 		currLine int
 	)
 
 	for i := 0; i < e.insIndex; i++ {
-		if e.buffer.Bytes()[i] == '\n' || x - (constants.EditorPaddingLeft + 2) > e.lineCounter[y - (constants.EditorPaddingTop + 1)] {
+		if e.buffer.Bytes()[i] == '\n' || x-(constants.EditorPaddingLeft+2) > e.lineCounter[y-(constants.EditorPaddingTop+1)] {
 			currLine++
 			x = constants.EditorPaddingLeft + 1
 
@@ -185,7 +185,7 @@ func (e *Editor) Launch() {
 
 				// Count two newlines backwards and add the width
 				var (
-					count int
+					count    int
 					prevLine int
 				)
 				for i := e.insIndex - 1; i >= 0; i-- {
