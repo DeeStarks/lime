@@ -4,9 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"strconv"
 
 	"github.com/DeeStarks/lime/configs"
 	"github.com/DeeStarks/lime/internal/constants"
+	"github.com/DeeStarks/lime/internal/highlighters"
+	"github.com/gdamore/tcell/v2"
 )
 
 func (e *Editor) Read() {
@@ -26,6 +29,8 @@ func (e *Editor) Read() {
 	var (
 		word        string
 		wordCount   int
+		wordStyle   tcell.Style
+		openComment bool
 		xAxis       int = constants.EditorPaddingLeft + 2
 		yAxis       int = constants.EditorPaddingTop + 1
 		lineLength  int = 0
@@ -57,7 +62,7 @@ func (e *Editor) Read() {
 			e.screen.DrawText(
 				xAxis, yAxis,
 				xAxis+wordCount, yAxis,
-				word, e.defStyle)
+				word, wordStyle)
 			xAxis = constants.EditorPaddingLeft + 2
 			yAxis++
 			word = ""
@@ -75,6 +80,9 @@ func (e *Editor) Read() {
 				yAxis:  yAxis,
 			}
 			numbering = append(numbering, nmb)
+
+			openComment = false
+			wordStyle = e.defStyle
 		} else if c == ' ' {
 			lineLength++
 			if xAxis+wordCount > sw {
@@ -86,7 +94,7 @@ func (e *Editor) Read() {
 			e.screen.DrawText(
 				xAxis, yAxis,
 				xAxis+wordCount, yAxis,
-				word, e.defStyle)
+				word, wordStyle)
 			xAxis += wordCount + 1
 			word = ""
 			wordCount = 0
@@ -101,11 +109,33 @@ func (e *Editor) Read() {
 			e.screen.DrawText(
 				xAxis, yAxis,
 				xAxis+wordCount, yAxis,
-				word, e.defStyle)
+				word, wordStyle)
 		} else {
 			word += string(c)
 			wordCount++
 			lineLength++
+		}
+
+		// Highlight the word
+		if len(word) > 1 && word[0:2] == "//" {
+			openComment = true
+			wordStyle = highlighters.COMMENT_HIGHLIGHTER
+		}
+
+		if !openComment {
+			if len(word) > 0 && (word[0] == '"' && word[len(word)-1] == '"') {
+				wordStyle = highlighters.STRING_HIGHLIGHTER
+			} else if len(word) > 0 && (word[0] == '\'' && word[len(word)-1] == '\'') {
+				wordStyle = highlighters.STRING_HIGHLIGHTER
+			} else if len(word) > 0 && (word[0] == '`' && word[len(word)-1] == '`') {
+				wordStyle = highlighters.STRING_HIGHLIGHTER
+			} else if _, ok := strconv.Atoi(word); ok == nil {
+				wordStyle = highlighters.INT_HIGHLIGHTER
+			} else if _, ok := strconv.ParseFloat(word, 64); ok == nil {
+				wordStyle = highlighters.INT_HIGHLIGHTER
+			} else {
+				wordStyle = e.highlighters.GetStyle(word)
+			}
 		}
 	}
 

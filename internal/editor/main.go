@@ -8,6 +8,7 @@ import (
 
 	"github.com/DeeStarks/lime/configs"
 	"github.com/DeeStarks/lime/internal/constants"
+	"github.com/DeeStarks/lime/internal/highlighters"
 	"github.com/DeeStarks/lime/internal/screen"
 	"github.com/DeeStarks/lime/internal/utils"
 	"github.com/gdamore/tcell/v2"
@@ -29,6 +30,7 @@ type Editor struct {
 	getContext    func() context.Context
 	setContext    func(context.Context)
 	cancelContext context.CancelFunc
+	highlighters  *highlighters.Highlighter
 }
 
 func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context), getCtx func() context.Context, cancelCtx context.CancelFunc) *Editor {
@@ -63,6 +65,7 @@ func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context
 		getContext:    getCtx,
 		setContext:    setCtx,
 		cancelContext: cancelCtx,
+		highlighters:  highlighters.NewHighlighter(utils.GetFileExtension(file.Name())),
 	}
 }
 
