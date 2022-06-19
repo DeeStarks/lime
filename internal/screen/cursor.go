@@ -48,7 +48,6 @@ func (s *Screen) MoveCursor(code constants.KeyCode) {
 		sl := s.getContext().Value(constants.StartLineCtxKey).(int)
 		if y == pt && sl > 0 {
 			s.ScrollUp()
-			// s.SetCursor(x, y)
 		} else {
 			if y <= pt {
 				s.SetCursor(x, pt)
@@ -65,7 +64,6 @@ func (s *Screen) MoveCursor(code constants.KeyCode) {
 
 		if y+pt == sh && y+pt+sl < tl { // if at bottom of screen and there are more lines to show
 			s.ScrollDown()
-			// s.SetCursor(x, sh-pt)
 		} else {
 			if y+sl >= tl { // if at the last line
 				s.SetCursor(x, y)
@@ -73,12 +71,6 @@ func (s *Screen) MoveCursor(code constants.KeyCode) {
 				s.SetCursor(x, y+1)
 			}
 		}
-		// if y >= sh-pb {
-		// 	s.ScrollDown()
-		// 	s.SetCursor(x, sh-pb)
-		// } else {
-		// 	s.SetCursor(x, y+1)
-		// }
 	case constants.KeyEnter:
 		x, y := s.GetCursorPosition()
 		_, sh := s.GetScreen().Size()
