@@ -22,6 +22,7 @@ type Editor struct {
 	maxHistory    int
 	currentBuffer int 	// The current buffer in the history
 	insIndex      int   // The index where new input will be appended
+	indexHistory  []int // The index history
 	startLine     int   // The line first line on the screen
 	lineCounter   []int // The length of each line
 	screen        *screen.Screen
@@ -52,10 +53,13 @@ func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context
 	if err != nil {
 		utils.LogMessage("Error reading file: " + err.Error())
 	}
-	// Create a buffer to hold the file contents
+	// Initialize histories
 	maxHistory := 50 // The maximum number of history buffers
 	history := make([]bytes.Buffer, maxHistory)
 	history[0].Write(bytes.NewBuffer(b).Bytes())
+
+	indexHistory := make([]int, maxHistory)
+	indexHistory[0] = 0
 
 	return &Editor{
 		file:          file,
@@ -65,6 +69,7 @@ func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context
 		buffer:        history[0],
 		currentBuffer: 0,
 		insIndex:      0,
+		indexHistory:  indexHistory,
 		startLine:     0,
 		lineCounter:   make([]int, sh),
 		screen:        screen,
@@ -103,6 +108,12 @@ func (e *Editor) InsertToBuffer(b []byte, i int) {
 		newHistory[e.maxHistory-1].Reset()
 		newHistory[e.maxHistory-1].Write(e.buffer.Bytes())
 		e.history = newHistory
+
+		// Update the index history
+		newIndexHistory := make([]int, e.maxHistory)
+		copy(newIndexHistory, e.indexHistory[1:])
+		newIndexHistory[e.maxHistory-1] = e.insIndex
+		e.indexHistory = newIndexHistory
 	} else {
 		// If the buffer history is not full, add a new buffer
 		e.currentBuffer++
@@ -112,6 +123,15 @@ func (e *Editor) InsertToBuffer(b []byte, i int) {
 		if e.currentBuffer + 1 < e.maxHistory {
 			for i := e.currentBuffer + 1; i < len(e.history); i++ {
 				e.history[i] = *bytes.NewBuffer(nil)
+			}
+		}
+
+		// Update the index history
+		e.indexHistory[e.currentBuffer] = e.insIndex
+		// Update the index history after the current buffer to 0
+		if e.currentBuffer + 1 < e.maxHistory {
+			for i := e.currentBuffer + 1; i < len(e.indexHistory); i++ {
+				e.indexHistory[i] = 0
 			}
 		}
 	}
@@ -126,7 +146,7 @@ func (e *Editor) Undo() {
 		e.buffer.Write(e.history[prev].Bytes())
 
 		// Decrement the index
-		e.insIndex--
+		e.insIndex = e.indexHistory[prev] + 1
 		e.Read()
 		e.UpdateCursorPosition()
 	}
@@ -140,7 +160,7 @@ func (e *Editor) Redo() {
 		e.buffer.Write(e.history[next].Bytes())
 
 		// Increment the index
-		e.insIndex++
+		e.insIndex = e.indexHistory[next] + 1
 		e.Read()
 		e.UpdateCursorPosition()
 	}
