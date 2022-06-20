@@ -1,24 +1,23 @@
 # LIME - Simple Lightweight editor
 
-(Still under development)
-
-[![asciicast](https://asciinema.org/a/peFiGYI3OX0kfqcsiTYrUEbNR.svg)](https://asciinema.org/a/peFiGYI3OX0kfqcsiTYrUEbNR)
+[![asciicast](https://asciinema.org/a/503156.svg)](https://asciinema.org/a/503156)
 
 ### Installation
 ```
-$ git clone github.com/DeeStarks/lime && \
-$ cd lime && make
+$ go install github.com/DeeStarks/lime@latest
 ```
 
 ### Usage
-- `./lime <filename>`: start the editor
+- `lime <filename>` to start editing a file
 
-### Configuration
-Configuration files are located in `configs` directory.
-- `editor.go`: configuration file for the editor (e.g. Tab size)
-- `version.go`
+### Syntax highlighting
+Currently, the following languages are supported:
+- Golang
+- Python
 
-### Key Bindings
+### Available key bindings
 - `Ctrl+W`: launch editor
 - `Ctrl+Q`: quit the editor
 - `Ctrl+S`: save file
+- `Ctrl+Z`: undo
+- `Ctrl+Y`: redo
