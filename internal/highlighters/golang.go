@@ -52,6 +52,16 @@ var (
 		">>=":         utils.CreateStyle(tcell.ColorReset, tcell.ColorPurple),
 		"&&":          utils.CreateStyle(tcell.ColorReset, tcell.ColorPurple),
 		"||":          utils.CreateStyle(tcell.ColorReset, tcell.ColorPurple),
+		"*":          utils.CreateStyle(tcell.ColorReset, tcell.ColorPurple),
+		"&":          utils.CreateStyle(tcell.ColorReset, tcell.ColorYellow),
+
+		"(":          utils.CreateStyle(tcell.ColorReset, tcell.ColorYellow),
+		")":          utils.CreateStyle(tcell.ColorReset, tcell.ColorYellow),
+		"{":          utils.CreateStyle(tcell.ColorReset, tcell.ColorYellow),
+		"}":          utils.CreateStyle(tcell.ColorReset, tcell.ColorYellow),
+		"[":          utils.CreateStyle(tcell.ColorReset, tcell.ColorYellow),
+		"]":          utils.CreateStyle(tcell.ColorReset, tcell.ColorYellow),
+		";":          utils.CreateStyle(tcell.ColorReset, tcell.ColorYellow),
 
 		"int":        utils.CreateStyle(tcell.ColorReset, tcell.ColorBlue),
 		"string":     utils.CreateStyle(tcell.ColorReset, tcell.ColorBlue),

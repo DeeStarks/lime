@@ -42,6 +42,7 @@ func (e *Editor) Read() {
 		wordCount   int
 		wordStyle   tcell.Style
 		openComment bool
+		openString bool
 		xAxis       int = constants.EditorPaddingLeft + 2
 		yAxis       int = constants.EditorPaddingTop + 1
 		lineLength  int = 0
@@ -54,8 +55,19 @@ func (e *Editor) Read() {
 			},
 		}
 	)
-
+	// Determine we're writing in a string
+	
 	for i, c := range buf {
+		if len(word) > 0 {
+			// Discover strings
+			if word[0] == '"' || word[0] == '\'' {
+				openString = true
+			}
+			if openString && (word[len(word)-1] == '"' || word[len(word)-1] == '\'') {
+				openString = false
+			}
+		}
+
 		if xAxis > e.width {
 			xAxis = constants.EditorPaddingLeft + 2
 			yAxis++
@@ -94,7 +106,7 @@ func (e *Editor) Read() {
 
 			openComment = false
 			wordStyle = e.defStyle
-		} else if c == ' ' {
+		} else if !openString && c == ' ' {
 			lineLength++
 			if xAxis+wordCount > sw {
 				xAxis = constants.EditorPaddingLeft + 2
@@ -109,6 +121,31 @@ func (e *Editor) Read() {
 			xAxis += wordCount + 1
 			word = ""
 			wordCount = 0
+		} else if !openString && (c == '.' ||  c == ',' || c == '(' || c == ')' || c == '[' || c == ']' || c == '{' || c == '}' || c == '*' || c == '&') {
+			if xAxis+wordCount > sw {
+				// If at the end of the line and word can't fit
+				xAxis = constants.EditorPaddingLeft + 2
+				yAxis++
+				lineCounter = append(lineCounter, lineLength-wordCount)
+				lineLength = 0
+			}
+
+			// First draw word
+			e.screen.DrawText(
+				xAxis, yAxis,
+				xAxis+wordCount, yAxis,
+				word, wordStyle)
+			xAxis += wordCount
+			word = ""
+			wordCount = 0
+
+			// Draw the char
+			e.screen.DrawText(
+				xAxis, yAxis,
+				xAxis+1, yAxis,
+				string(c), e.highlighters.GetStyle(string(c)))
+			xAxis++
+			lineLength++
 		} else if i == len(buf)-1 {
 			word += string(c)
 			wordCount++

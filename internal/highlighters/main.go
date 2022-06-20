@@ -7,7 +7,7 @@ import (
 
 var (
 	INT_HIGHLIGHTER     = utils.CreateStyle(tcell.ColorReset, tcell.ColorSkyblue)
-	STRING_HIGHLIGHTER  = utils.CreateStyle(tcell.ColorReset, tcell.ColorLightGoldenrodYellow)
+	STRING_HIGHLIGHTER  = utils.CreateStyle(tcell.ColorReset, tcell.ColorYellowGreen)
 	COMMENT_HIGHLIGHTER = utils.CreateStyle(tcell.ColorReset, tcell.ColorDimGray)
 )
 

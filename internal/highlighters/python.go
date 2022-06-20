@@ -44,9 +44,15 @@ var (
 		"break":    utils.CreateStyle(tcell.ColorReset, tcell.ColorPurple),
 		"return":   utils.CreateStyle(tcell.ColorReset, tcell.ColorPurple),
 		"lambda":   utils.CreateStyle(tcell.ColorReset, tcell.ColorPurple),
+		"->":   utils.CreateStyle(tcell.ColorReset, tcell.ColorPurple),
 
 		"True":  utils.CreateStyle(tcell.ColorReset, tcell.ColorDeepSkyBlue),
 		"False": utils.CreateStyle(tcell.ColorReset, tcell.ColorDeepSkyBlue),
 		"None":  utils.CreateStyle(tcell.ColorReset, tcell.ColorDeepSkyBlue),
+		
+		"self":  utils.CreateStyle(tcell.ColorReset, tcell.ColorSlateBlue),
+		"print":  utils.CreateStyle(tcell.ColorReset, tcell.ColorSlateBlue),
+		"__init__":  utils.CreateStyle(tcell.ColorReset, tcell.ColorSlateBlue),
+		"__str__":  utils.CreateStyle(tcell.ColorReset, tcell.ColorSlateBlue),
 	}
 )
