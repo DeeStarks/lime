@@ -17,7 +17,10 @@ import (
 type Editor struct {
 	file          *os.File
 	initialBuffer *bytes.Buffer
-	buffer        *bytes.Buffer
+	buffer        bytes.Buffer
+	history []bytes.Buffer
+	maxHistory    int
+	currentBuffer int 	// The current buffer in the history
 	insIndex      int   // The index where new input will be appended
 	startLine     int   // The line first line on the screen
 	lineCounter   []int // The length of each line
@@ -49,10 +52,18 @@ func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context
 	if err != nil {
 		utils.LogMessage("Error reading file: " + err.Error())
 	}
+	// Create a buffer to hold the file contents
+	maxHistory := 50 // The maximum number of history buffers
+	history := make([]bytes.Buffer, maxHistory)
+	history[0].Write(bytes.NewBuffer(b).Bytes())
+
 	return &Editor{
 		file:          file,
 		initialBuffer: bytes.NewBuffer(b),
-		buffer:        bytes.NewBuffer(b),
+		history: 		history,
+		maxHistory:    maxHistory,
+		buffer:        history[0],
+		currentBuffer: 0,
 		insIndex:      0,
 		startLine:     0,
 		lineCounter:   make([]int, sh),
@@ -69,23 +80,70 @@ func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context
 	}
 }
 
-func (e *Editor) WriteBuffer(b []byte) {
-	e.buffer.Write(b)
-}
-
 // b: the text to be written to the buffer;
 // i: the index to insert the text at
 func (e *Editor) InsertToBuffer(b []byte, i int) {
-	var newBuf []byte
-	if i >= len(e.buffer.Bytes()) { // If the index is greater than the length of the buffer, append the text
-		newBuf = append(e.buffer.Bytes(), b...)
+	if i >= len(e.ReadBufferByte()) { // If the index is greater than the length of the buffer, append the text
+		e.buffer.Reset()
+		e.buffer.Write(append(e.ReadBufferByte(), b...))
 	} else if i < 0 { // If the index is less than 0, insert the text at the beginning of the buffer
-		newBuf = append(b, e.buffer.Bytes()...)
+		e.buffer.Reset()
+		e.buffer.Write(append(b, e.ReadBufferByte()...))
 	} else { // If the index is within the buffer, insert the text at the index
-		newBuf = append(e.buffer.Bytes()[:i], append(b, e.buffer.Bytes()[i:]...)...)
+		prevBuf := e.ReadBufferByte()
+		e.buffer.Reset()
+		e.buffer = *bytes.NewBuffer(append(prevBuf[:i], append(b, prevBuf[i:]...)...))
 	}
-	e.buffer.Reset()
-	e.buffer.Write(newBuf)
+
+	// Update the buffer history
+	if e.currentBuffer + 1 >= e.maxHistory { // Make sure the history doesn't grow too large
+		// If the buffer history is full, remove the oldest buffer
+		newHistory := make([]bytes.Buffer, e.maxHistory)
+		copy(newHistory, e.history[1:])
+		newHistory[e.maxHistory-1].Reset()
+		newHistory[e.maxHistory-1].Write(e.buffer.Bytes())
+		e.history = newHistory
+	} else {
+		// If the buffer history is not full, add a new buffer
+		e.currentBuffer++
+		e.history[e.currentBuffer].Reset()
+		e.history[e.currentBuffer].Write(e.ReadBufferByte())
+		// Update all history buffers after the current buffer to null
+		if e.currentBuffer + 1 < e.maxHistory {
+			for i := e.currentBuffer + 1; i < len(e.history); i++ {
+				e.history[i] = *bytes.NewBuffer(nil)
+			}
+		}
+	}
+
+}
+
+func (e *Editor) Undo() {
+	prev := e.currentBuffer - 1
+	if prev >= 0 {
+		e.currentBuffer = prev
+		e.buffer.Reset()
+		e.buffer.Write(e.history[prev].Bytes())
+
+		// Decrement the index
+		e.insIndex--
+		e.Read()
+		e.UpdateCursorPosition()
+	}
+}
+
+func (e *Editor) Redo() {
+	next := e.currentBuffer + 1
+	if next < len(e.history) && e.history[next].Len() > 0 {
+		e.currentBuffer = next
+		e.buffer.Reset()
+		e.buffer.Write(e.history[next].Bytes())
+
+		// Increment the index
+		e.insIndex++
+		e.Read()
+		e.UpdateCursorPosition()
+	}
 }
 
 func (e *Editor) RemoveFromBuffer(i int) {
@@ -263,6 +321,10 @@ func (e *Editor) Launch() {
 				e.screen.SetCursor(constants.EditorPaddingLeft+2, constants.EditorPaddingTop+1)
 
 				e.Read()
+			} else if ev.Key() == tcell.KeyCtrlZ && started {
+				e.Undo()
+			} else if ev.Key() == tcell.KeyCtrlY && started {
+				e.Redo()
 			} else if (ev.Key() == tcell.KeyBackspace || ev.Key() == tcell.KeyBackspace2) && started {
 				e.BackSpace()
 			} else if ev.Key() == tcell.KeyEnter && started {
