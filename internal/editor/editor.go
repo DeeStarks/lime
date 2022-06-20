@@ -220,6 +220,16 @@ func (e *Editor) Write(char rune) {
 	e.insIndex++
 	e.Read()
 	e.UpdateCursorPosition()
+
+	// Scroll to the bottom if the cursor is at the end of the screen
+	_, sh := e.screen.GetScreen().Size()
+	_, y := e.screen.GetCursorPosition()
+	if y >= (sh - 1) {
+		e.startLine++
+		e.Read()
+
+		e.UpdateCursorPosition() // To make sure the cursor is at the right position
+	}
 }
 
 func (e *Editor) BackSpace() {
