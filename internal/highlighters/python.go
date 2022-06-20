@@ -6,6 +6,7 @@ import (
 )
 
 var (
+	python_comment_indicator = "#"
 	// Highlighters is a map of highlighters
 	python_scheme = map[string]tcell.Style{
 		"class":    utils.CreateStyle(tcell.ColorReset, tcell.ColorBlue),

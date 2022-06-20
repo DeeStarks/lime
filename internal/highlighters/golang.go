@@ -6,6 +6,7 @@ import (
 )
 
 var (
+	golang_comment_indicator = "//"
 	// Highlighters is a map of highlighters
 	golang_scheme = map[string]tcell.Style{
 		"func":        utils.CreateStyle(tcell.ColorReset, tcell.ColorPurple),

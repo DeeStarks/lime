@@ -14,21 +14,28 @@ var (
 type Highlighter struct {
 	ext    string // The file extension
 	scheme map[string]tcell.Style
+	commentIndicator string
 }
 
 func NewHighlighter(ext string) *Highlighter {
-	var scheme map[string]tcell.Style
+	var (
+		scheme map[string]tcell.Style
+		commentIndicator string
+	)
 
 	switch ext {
 	case ".go":
 		scheme = golang_scheme
+		commentIndicator = golang_comment_indicator
 	case ".py":
 		scheme = python_scheme
+		commentIndicator = python_comment_indicator
 	}
 
 	return &Highlighter{
 		ext:    ext,
 		scheme: scheme,
+		commentIndicator: commentIndicator,
 	}
 }
 
@@ -37,4 +44,8 @@ func (h *Highlighter) GetStyle(word string) tcell.Style {
 		return style
 	}
 	return utils.CreateStyle(tcell.ColorReset, tcell.ColorWhite)
+}
+
+func (h *Highlighter) GetCommentIndicator() string {
+	return h.commentIndicator
 }
