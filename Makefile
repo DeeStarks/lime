@@ -7,4 +7,4 @@ install:
 	@go get ./...
 
 build:
-	@go build -o ./lime ./cmd/main.go
+	@go build -o ./lime lime.go
