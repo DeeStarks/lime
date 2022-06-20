@@ -58,31 +58,29 @@ func (s *Screen) Quit() {
 }
 
 func (s *Screen) ShowBox() {
+	s.GetScreen().Clear()
 	// Draw background box
 	sw, sh := s.screen.Size()     // screen width and height
-	bw, bh := (sw/2)-30, (sh/2)-5 // box width and height
+	bw, bh := (sw/2)-30, (sh/2)-6 // box width and height
 	s.DrawBox(bw, bh, sw-bw, sh-bh-3, "", true, true, true, tcell.StyleDefault)
 
 	// Draw inner contents - logo, info, version, author...
-	// Logo
-	lw, lh := (sw/2)-9, (sh/2)-3 // Logo size
-	logo := s.version.Logo
-	// The logo is displayed in reverse, so we need to reverse it
-	left, right := 0, len(logo)-1
-	for left < right {
-		logo[left], logo[right] = logo[right], logo[left]
-		left++
-		right--
-	}
+	var (
+		logoTop  = "█░░ █ █▀▄▀█ █▀▀"
+		logoDown = "█▄▄ █ █░▀░█ ██▄"
+		info1    = "Ctrl+W = start | Ctrl+Q = quit | Ctrl+S = save"
+		info2    = "Ctrl+Z = undo | Ctrl+Y = redo"
+	)
 
-	for _, v := range logo {
-		s.DrawBox(lw, lh, sw-lw, sh-lh, v, false, false, false, tcell.StyleDefault)
-		lh-- // Subtract to enter next line
-	}
-	// Info text
-	iw, ih := (sw/2)-(len(s.version.InfoText)/2)-2, (sh/2)+1
-	s.DrawBox(iw, ih, sw-iw, sh-ih, s.version.InfoText, false, false, false, tcell.StyleDefault)
+	ltx, lty := (sw/2)-8, (sh/2)-4              // logoTop x and y
+	ldx, ldy := (sw/2)-8, (sh/2)-3              // logoDown x and y
+	i1x, i1y := (sw/2)-len(info1)/2+1, (sh/2)-1 // info1 x and y
+	i2x, i2y := (sw/2)-len(info2)/2+1, (sh/2)-0 // info2 x and y
 
+	s.DrawText(ltx, lty, ltx+len(logoTop), lty+1, logoTop, s.GetBoxStyle())
+	s.DrawText(ldx, ldy, ldx+len(logoDown), ldy+1, logoDown, s.GetBoxStyle())
+	s.DrawText(i1x, i1y, i1x+len(info1), i1y+1, info1, s.GetBoxStyle())
+	s.DrawText(i2x, i2y, i2x+len(info2), i2y+1, info2, s.GetBoxStyle())
 }
 
 func (s *Screen) GetScreen() tcell.Screen {

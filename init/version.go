@@ -15,15 +15,3 @@ func NewVersion(version configs.LimeVersion) *Version {
 func (v *Version) GetNumber() int {
 	return v.Number
 }
-
-func (v *Version) GetLogo() []string {
-	return v.Logo
-}
-
-func (v *Version) GetInfo() string {
-	return v.InfoText
-}
-
-func (v *Version) GetAuthor() string {
-	return v.Author
-}
