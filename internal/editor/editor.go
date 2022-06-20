@@ -166,7 +166,7 @@ func (e *Editor) Read() {
 
 		// Highlight the word
 		commentIndicator := e.highlighters.GetCommentIndicator()
-		if len(word) > len(commentIndicator)-1 && word[0:len(commentIndicator)] == commentIndicator {
+		if len(word) > len(commentIndicator)-1 && len(commentIndicator) > 0 && word[0:len(commentIndicator)] == commentIndicator {
 			openComment = true
 			wordStyle = highlighters.COMMENT_HIGHLIGHTER
 		}
