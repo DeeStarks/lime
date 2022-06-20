@@ -12,14 +12,14 @@ var (
 )
 
 type Highlighter struct {
-	ext    string // The file extension
-	scheme map[string]tcell.Style
+	ext              string // The file extension
+	scheme           map[string]tcell.Style
 	commentIndicator string
 }
 
 func NewHighlighter(ext string) *Highlighter {
 	var (
-		scheme map[string]tcell.Style
+		scheme           map[string]tcell.Style
 		commentIndicator string
 	)
 
@@ -33,8 +33,8 @@ func NewHighlighter(ext string) *Highlighter {
 	}
 
 	return &Highlighter{
-		ext:    ext,
-		scheme: scheme,
+		ext:              ext,
+		scheme:           scheme,
 		commentIndicator: commentIndicator,
 	}
 }

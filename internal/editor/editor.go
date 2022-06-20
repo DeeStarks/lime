@@ -21,7 +21,7 @@ func (e *Editor) Read() {
 	sw, _ := e.screen.GetScreen().Size()
 
 	buf := e.ReadBufferByte()
-	
+
 	newlineCounts := 1
 	for i := 0; i < len(buf); i++ {
 		if buf[i] == '\n' {
@@ -43,12 +43,12 @@ func (e *Editor) Read() {
 		wordCount   int
 		wordStyle   tcell.Style
 		openComment bool
-		openString bool
+		openString  bool
 		xAxis       int = constants.EditorPaddingLeft + 2
 		yAxis       int = constants.EditorPaddingTop + 1
 		lineLength  int = 0
 		lineCounter []int
-		numCount    int = e.startLine+1
+		numCount    int = e.startLine + 1
 		numbering       = []LineNumbering{
 			{
 				number: numCount,
@@ -57,7 +57,7 @@ func (e *Editor) Read() {
 		}
 	)
 	// Determine we're writing in a string
-	
+
 	for i, c := range buf {
 		if len(word) > 0 {
 			// Discover strings
@@ -122,7 +122,7 @@ func (e *Editor) Read() {
 			xAxis += wordCount + 1
 			word = ""
 			wordCount = 0
-		} else if !openString && (c == '.' ||  c == ',' || c == '(' || c == ')' || c == '[' || c == ']' || c == '{' || c == '}' || c == '*' || c == '&') {
+		} else if !openString && (c == '.' || c == ',' || c == '(' || c == ')' || c == '[' || c == ']' || c == '{' || c == '}' || c == '*' || c == '&') {
 			if xAxis+wordCount > sw {
 				// If at the end of the line and word can't fit
 				xAxis = constants.EditorPaddingLeft + 2

@@ -18,9 +18,9 @@ type Editor struct {
 	file          *os.File
 	initialBuffer *bytes.Buffer
 	buffer        bytes.Buffer
-	history []bytes.Buffer
+	history       []bytes.Buffer
 	maxHistory    int
-	currentBuffer int 	// The current buffer in the history
+	currentBuffer int   // The current buffer in the history
 	insIndex      int   // The index where new input will be appended
 	indexHistory  []int // The index history
 	startLine     int   // The line first line on the screen
@@ -64,7 +64,7 @@ func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context
 	return &Editor{
 		file:          file,
 		initialBuffer: bytes.NewBuffer(b),
-		history: 		history,
+		history:       history,
 		maxHistory:    maxHistory,
 		buffer:        history[0],
 		currentBuffer: 0,
@@ -101,7 +101,7 @@ func (e *Editor) InsertToBuffer(b []byte, i int) {
 	}
 
 	// Update the buffer history
-	if e.currentBuffer + 1 >= e.maxHistory { // Make sure the history doesn't grow too large
+	if e.currentBuffer+1 >= e.maxHistory { // Make sure the history doesn't grow too large
 		// If the buffer history is full, remove the oldest buffer
 		newHistory := make([]bytes.Buffer, e.maxHistory)
 		copy(newHistory, e.history[1:])
@@ -120,7 +120,7 @@ func (e *Editor) InsertToBuffer(b []byte, i int) {
 		e.history[e.currentBuffer].Reset()
 		e.history[e.currentBuffer].Write(e.ReadBufferByte())
 		// Update all history buffers after the current buffer to null
-		if e.currentBuffer + 1 < e.maxHistory {
+		if e.currentBuffer+1 < e.maxHistory {
 			for i := e.currentBuffer + 1; i < len(e.history); i++ {
 				e.history[i] = *bytes.NewBuffer(nil)
 			}
@@ -129,7 +129,7 @@ func (e *Editor) InsertToBuffer(b []byte, i int) {
 		// Update the index history
 		e.indexHistory[e.currentBuffer] = e.insIndex
 		// Update the index history after the current buffer to 0
-		if e.currentBuffer + 1 < e.maxHistory {
+		if e.currentBuffer+1 < e.maxHistory {
 			for i := e.currentBuffer + 1; i < len(e.indexHistory); i++ {
 				e.indexHistory[i] = 0
 			}
@@ -199,8 +199,8 @@ func (e *Editor) ScrollUp() {
 	// This checks if that the cursor is at the last line before scrolling
 	_, y := e.screen.GetCursorPosition()
 	_, sh := e.screen.GetScreen().Size()
-	sh = sh - (constants.EditorPaddingTop+1)
-	line := y - (constants.EditorPaddingTop+1)
+	sh = sh - (constants.EditorPaddingTop + 1)
+	line := y - (constants.EditorPaddingTop + 1)
 
 	if line >= sh && e.insIndex <= len(e.ReadBufferByte()) {
 		e.startLine++
@@ -294,14 +294,14 @@ func (e *Editor) Launch() {
 				y -= constants.EditorPaddingTop + 1
 
 				if e.startLine > 0 && y <= 0 {
-					if y - 1 < 0 {
+					if y-1 < 0 {
 						e.startLine--
 						e.Read()
 					}
 				}
 
 				if y > 0 {
-					for i := e.insIndex-1; i > 0; i-- {
+					for i := e.insIndex - 1; i > 0; i-- {
 						if e.buffer.Bytes()[i] == '\n' {
 							e.insIndex = i
 							break
