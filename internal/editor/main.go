@@ -289,12 +289,9 @@ func (e *Editor) Launch() {
 				e.UpdateCursorPosition()
 				e.ScrollUp()
 			} else if ev.Key() == tcell.KeyUp && started { // Up
-				var width int
-
 				// Get the width from the beginning of the line to the index
-				x, y := e.screen.GetCursorPosition()
+				_, y := e.screen.GetCursorPosition()
 				y -= constants.EditorPaddingTop + 1
-				width = x - (constants.EditorPaddingLeft + 2)
 
 				if e.startLine > 0 && y <= 0 {
 					if y - 1 < 0 {
@@ -304,53 +301,10 @@ func (e *Editor) Launch() {
 				}
 
 				if y > 0 {
-					// First, we remove the width from the beginning of the current line
-					prevIndex := e.insIndex
-					e.insIndex -= width
-					if e.insIndex < 0 {
-						e.insIndex = 0
-					}
-
-					// Count number of tabs between the previous and current index
-					var tabs int
-					for i := prevIndex; i > e.insIndex; i-- {
-						if e.ReadBufferByte()[i] == '\t' {
-							tabs++
-						}
-					}
-
-					// We incrment the insIndex by the number of tabs
-					if tabs > 0 {
-						e.insIndex += tabs * configs.TabSize - 1
-					}
-
-					if e.insIndex > 0 {
-						e.insIndex--
-
-						width = e.lineCounter[y-1] - width
-						if width <= 0 {
-							width = 0
-						}
-						prevIndex = e.insIndex
-						e.insIndex -= width
-						
-						if e.insIndex < 0 { 
-							// Just a precaution to make sure insertion index doesn't go below 0
-							e.insIndex = 0
-						}
-
-						// // Count tabs between the previous and current index
-						tabs = 0
-						for i := e.insIndex; i < prevIndex; i++ {
-							utils.LogMessage("%s", string(e.ReadBufferByte()[i]))
-							if e.ReadBufferByte()[i] == '\t' {
-								tabs++
-							}
-						}
-
-						// // We incrment the insIndex by the number of tabs
-						if tabs > 0 {
-							e.insIndex += tabs * configs.TabSize - 1
+					for i := e.insIndex-1; i > 0; i-- {
+						if e.buffer.Bytes()[i] == '\n' {
+							e.insIndex = i
+							break
 						}
 					}
 				}
@@ -358,52 +312,23 @@ func (e *Editor) Launch() {
 				// // Update cursor position again to make sure it's in the right place
 				e.UpdateCursorPosition()
 			} else if ev.Key() == tcell.KeyDown && started { // Down
-				var (
-					width int // Width from the beginning of the line to the index
-					rem  int // Remaining width to be added to the index
-				)
+				nextLine := 0
+				_, sh := e.screen.GetScreen().Size()
+				_, y := e.screen.GetCursorPosition()
 
 				for i := e.insIndex; i < len(e.ReadBufferByte()); i++ {
 					if e.ReadBufferByte()[i] == '\n' {
+						nextLine = i
 						break
 					}
-					rem++
 				}
 
-				// Get the width between the index and beginning of the line
-				_, sh := e.screen.GetScreen().Size()
-				x, y := e.screen.GetCursorPosition()
-				width = x - (constants.EditorPaddingLeft + 2)
-
-				// Check if next line is longer than the current one before moving to the next line
-				if y < (sh - 1) && y < len(e.lineCounter) {
-					var nextLine int
-
-					if e.lineCounter[y] >= width {
-						nextLine = e.insIndex + rem + width + 1 // +1 for newline
-					} else {
-						nextLine = e.insIndex + rem + e.lineCounter[y] + 1 // +1 for newline
-					}
-
-					if nextLine < len(e.ReadBufferByte()) {
-						e.insIndex = nextLine
-					} else {
-						e.insIndex = len(e.ReadBufferByte())
-					}
-				} else {
-					if e.insIndex + rem + width + 1 < len(e.ReadBufferByte()) {
-						e.insIndex += rem + width + 1 // +1 for newline
-					} else {
-						e.insIndex = len(e.ReadBufferByte())
-					}
-
-					// Scroll
-					_, y = e.screen.GetCursorPosition()
+				if nextLine > 0 {
 					if y >= (sh - 1) {
 						e.startLine++
 						e.Read()
 					}
-					
+					e.insIndex = nextLine + 1
 				}
 
 				// // Update cursor position again to make sure it's in the right place
