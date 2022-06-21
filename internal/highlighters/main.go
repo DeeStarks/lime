@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	INT_HIGHLIGHTER     = utils.CreateStyle(tcell.ColorReset, tcell.ColorSkyblue)
-	STRING_HIGHLIGHTER  = utils.CreateStyle(tcell.ColorReset, tcell.ColorLightYellow)
-	COMMENT_HIGHLIGHTER = utils.CreateStyle(tcell.ColorReset, tcell.ColorDimGray)
+	INT_HIGHLIGHTER     = utils.CreateStyle(tcell.ColorBlack, tcell.ColorSkyblue)
+	STRING_HIGHLIGHTER  = utils.CreateStyle(tcell.ColorBlack, tcell.ColorLightYellow)
+	COMMENT_HIGHLIGHTER = utils.CreateStyle(tcell.ColorBlack, tcell.ColorDimGray)
 )
 
 type Highlighter struct {
@@ -43,7 +43,7 @@ func (h *Highlighter) GetStyle(word string) tcell.Style {
 	if style, ok := h.scheme[word]; ok {
 		return style
 	}
-	return utils.CreateStyle(tcell.ColorReset, tcell.ColorWhite)
+	return utils.CreateStyle(tcell.ColorBlack, tcell.ColorWhite)
 }
 
 func (h *Highlighter) GetCommentIndicator() string {
