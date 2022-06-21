@@ -90,7 +90,6 @@ func NewEditor(file *os.File, screen *screen.Screen, setCtx func(context.Context
 func (e *Editor) InsertToBuffer(b []byte, i int) {
 	if i >= len(e.ReadBufferByte()) { // If the index is greater than the length of the buffer, append the text
 		e.buffer.Write(b)
-		utils.LogMessage("New Buff: %v", e.buffer.String())
 	} else if i < 0 { // If the index is less than 0, insert the text at the beginning of the buffer
 		e.buffer.Reset()
 		e.buffer.Write(append(b, e.ReadBufferByte()...))
