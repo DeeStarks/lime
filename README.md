@@ -5,6 +5,7 @@
 ### Installation
 ```
 $ go install github.com/DeeStarks/lime@latest
+$ export PATH=$PATH:$(go env GOPATH)/bin
 ```
 
 ### Usage
