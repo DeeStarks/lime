@@ -16,15 +16,14 @@ type Screen struct {
 	boxColorFG tcell.Color // Box color foreground
 	boxColorBG tcell.Color // Box color background
 	screen     tcell.Screen
-	version    configs.LimeVersion
 	cursorPos  Cursor // Cursor position
 	getContext func() context.Context
 	setContext func(context.Context)
 	cancelCtx  context.CancelFunc
 }
 
-func NewScreen(version configs.LimeVersion, setCtx func(context.Context), getCtx func() context.Context, cancelCtx context.CancelFunc) *Screen {
-	defStyle := utils.CreateStyle(version.DefaultBackgroundColor, version.DefaultForegroundColor)
+func NewScreen(setCtx func(context.Context), getCtx func() context.Context, cancelCtx context.CancelFunc) *Screen {
+	defStyle := utils.CreateStyle(configs.DefaultBackgroundColor, configs.DefaultForegroundColor)
 
 	// Initialize screen
 	tScreen, err := tcell.NewScreen()
@@ -40,12 +39,11 @@ func NewScreen(version configs.LimeVersion, setCtx func(context.Context), getCtx
 	tScreen.Clear()
 
 	return &Screen{
-		defColorFG: version.DefaultForegroundColor,
-		defColorBG: version.DefaultBackgroundColor,
-		boxColorFG: version.BoxForegroundColor,
-		boxColorBG: version.BoxBackgroundColor,
+		defColorFG: configs.DefaultForegroundColor,
+		defColorBG: configs.DefaultBackgroundColor,
+		boxColorFG: configs.BoxForegroundColor,
+		boxColorBG: configs.BoxBackgroundColor,
 		screen:     tScreen,
-		version:    version,
 		getContext: getCtx,
 		setContext: setCtx,
 		cancelCtx:  cancelCtx,

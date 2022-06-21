@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/DeeStarks/lime/configs"
 	app "github.com/DeeStarks/lime/init"
 )
 
@@ -43,7 +42,6 @@ func main() {
 		defer file.Close()
 	}
 
-	v := app.NewVersion(configs.V1)
-	a := app.NewApplication(file, v)
+	a := app.NewApplication(file)
 	a.Start()
 }

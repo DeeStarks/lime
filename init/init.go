@@ -9,12 +9,11 @@ import (
 )
 
 type Application struct {
-	Version *Version
-	Screen  *screen.Screen
-	Editor  *editor.Editor
+	Screen *screen.Screen
+	Editor *editor.Editor
 }
 
-func NewApplication(f *os.File, v *Version) Application {
+func NewApplication(f *os.File) Application {
 	// Create a general context
 	ctx, cancel := context.WithCancel(context.Background())
 	setContext := func(newCtx context.Context) {
@@ -26,12 +25,11 @@ func NewApplication(f *os.File, v *Version) Application {
 	}
 
 	// Create a new screen
-	screen := screen.NewScreen(v.LimeVersion, setContext, getContext, cancel)
+	screen := screen.NewScreen(setContext, getContext, cancel)
 
 	return Application{
-		Version: v,
-		Screen:  screen,
-		Editor:  editor.NewEditor(f, screen, setContext, getContext, cancel),
+		Screen: screen,
+		Editor: editor.NewEditor(f, screen, setContext, getContext, cancel),
 	}
 }
 

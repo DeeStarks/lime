@@ -10,7 +10,7 @@ import (
 type LineNumbering struct {
 	number int
 	yAxis  int
-} 
+}
 
 func (e *Editor) showBars() { // Display title, numbering... bars
 	sw, sh := e.screen.GetScreen().Size() // Get screen size
