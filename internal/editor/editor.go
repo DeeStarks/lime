@@ -9,7 +9,6 @@ import (
 	"github.com/DeeStarks/lime/configs"
 	"github.com/DeeStarks/lime/internal/constants"
 	"github.com/DeeStarks/lime/internal/highlighters"
-	"github.com/DeeStarks/lime/internal/utils"
 	"github.com/gdamore/tcell/v2"
 )
 
@@ -198,7 +197,6 @@ func (e *Editor) Read() {
 	e.lineNumbering = numbering
 	screen.Show()
 	e.showBars()
-	utils.LogMessage("Line Counter Last: %d", len(lineCounter)-1)
 }
 
 func (e *Editor) Clear() {
